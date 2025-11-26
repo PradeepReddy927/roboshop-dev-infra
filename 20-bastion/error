@@ -1,0 +1,8 @@
+ Error: reading SSM Parameter (/roboshop/dev/bastion_sg_id): couldn't find resource
+│
+│   with data.aws_ssm_parameter.bastion_sg_id,
+│   on data.tf line 23, in data "aws_ssm_parameter" "bastion_sg_id":
+│   23: data "aws_ssm_parameter" "bastion_sg_id" {
+
+
+I separated my roboshop-dev-infra project into different modules such as VPC, Security Groups, and Bastion, where each module is responsible for creating a specific part of the infrastructure. The VPC module sets up the network components like the VPC, subnets, and routing, while the Security Group module creates all necessary security groups and stores their IDs in AWS SSM Parameter Store. One of the important parameters saved by this module is bastion_sg_id, which is required by the Bastion module. I initially ran only the VPC module and forgot to run the Security Group module. Because of this, the SSM parameter /roboshop/dev/bastion_sg_id did not exist. When I executed the Bastion module, Terraform tried to read this missing parameter from SSM, resulting in the error “Error reading SSM Parameter: couldn’t find resource.” This clearly indicated that the SG module had not been applied. After realizing the issue, I went back to the Security Group module, applied it, and the required SSM parameter was created successfully. Once I re-ran the Bastion module, Terraform was able to read the SSM parameter without any problem, and the Bastion instance was created successfully. The error was fully resolved after running the modules in the correct order.
