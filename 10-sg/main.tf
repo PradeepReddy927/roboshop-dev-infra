@@ -18,3 +18,14 @@ module "sg" {
   sg_description = "created for ${var.sg_names[count.index]}"
   vpc_id = local.vpc_id
 }
+
+
+# frontend accepting traffic from frontend ALB
+# resource "aws_security_group_rule" "frontend_frontend_alb" {            ===> frontend use manual load balancer & traget groups
+#   type              = "ingress"
+#   security_group_id = module.sg[9].sg_id # Frontend SG ID
+#   source_security_group_id = module.sg[11].sg_id # frontend ALB SG ID
+#   from_port         = 80
+#   protocol          = "tcp"
+#   to_port           = 80
+# }  
