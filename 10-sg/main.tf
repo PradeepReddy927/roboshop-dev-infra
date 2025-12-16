@@ -20,8 +20,10 @@ module "sg" {
 }
 
 
-# frontend accepting traffic from frontend ALB
-# resource "aws_security_group_rule" "frontend_frontend_alb" {            ===> frontend use manual load balancer & traget groups
+#frontend accepting traffic from frontend ALB 
+
+
+# resource "aws_security_group_rule" "frontend_frontend_alb" {
 #   type              = "ingress"
 #   security_group_id = module.sg[9].sg_id # Frontend SG ID
 #   source_security_group_id = module.sg[11].sg_id # frontend ALB SG ID
@@ -29,3 +31,6 @@ module "sg" {
 #   protocol          = "tcp"
 #   to_port           = 80
 # }  
+
+
+#   {            ===> frontend use manual load balancer & traget groups }
