@@ -37,7 +37,7 @@ resource "terraform_data" "mongodb" {
         # "sudo  sh /tmp/bootstrap.sh"
         "sudo  sh /tmp/bootstrap.sh mongodb"
     ]
-  }
+  }  
   
 }
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -153,6 +153,12 @@ resource "aws_instance" "mysql" {
     
 }
 
+resource "aws_iam_instance_profile" "mysql" {
+  name = "mysql"
+  role = "EC2SSMParameterRead"
+
+}
+
 resource "terraform_data" "mysql" {
   triggers_replace = [
     aws_instance.mysql.id
@@ -164,7 +170,7 @@ resource "terraform_data" "mysql" {
       password = "DevOps321"
       host     = aws_instance.mysql.private_ip
   }
-  # terraform copies this file to redis server
+  # terraform copies this file to mysql server
   provisioner "file" {
     source      = "bootstrap.sh"
     destination = "/tmp/bootstrap.sh"
@@ -173,7 +179,7 @@ resource "terraform_data" "mysql" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo  sh /tmp/bootstrap.sh mysql"
+        "sudo  sh /tmp/bootstrap.sh mysql dev"
     ]
   }
   

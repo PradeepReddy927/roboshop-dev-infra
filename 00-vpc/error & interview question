@@ -1,0 +1,13 @@
+🔹 Interview Question (⭐ Very Important)
+
+Q: Why does Terraform use state locking?
+A: To prevent concurrent writes and state corruption.
+
+Q: Why S3 gives 412 error?
+A: S3 enforces conditional writes when locking is enabled.
+
+✅ Summary
+
+* Error = stale Terraform state lock
+* Fix = terraform force-unlock <LOCK_ID>
+* Best practice = S3 + DynamoDB locking

@@ -30,7 +30,7 @@ module "sg" {
 #   from_port         = 80
 #   protocol          = "tcp"
 #   to_port           = 80
-# }  
+# } 
 
 
 #   {            ===> frontend use manual load balancer & traget groups }
