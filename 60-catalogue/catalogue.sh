@@ -1,5 +1,12 @@
 #!/bin/bash
 
+sudo growpart /dev/nvme0n1 4
+sudo lvextend -L +30G /dev/mapper/RootVG-homeVol
+sudo xfs_growfs /home
+
+
+
+
 component=$1
 environment=$2
 dnf install ansible -y
