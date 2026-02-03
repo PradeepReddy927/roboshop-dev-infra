@@ -166,10 +166,10 @@ resource "terraform_data" "mysql" {
   ]
  
   connection {
-      type     = "ssh"
-      user     = "ec2-user"
-      password = "DevOps321"
-      host     = aws_instance.mysql.private_ip
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = aws_instance.mysql.private_ip
   }
   # terraform copies this file to mysql server
   provisioner "file" {
@@ -179,8 +179,8 @@ resource "terraform_data" "mysql" {
   }
   provisioner "remote-exec" {
     inline = [
-        "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh mysql dev"
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo sh /tmp/bootstrap.sh mysql dev"
     ]
   }
   
