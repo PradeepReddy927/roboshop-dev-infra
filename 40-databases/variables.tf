@@ -22,3 +22,11 @@ variable "sg_names" {
          "backend_alb" 
     ]   
 }
+
+variable "zone_id" {
+    default = "Z0883062RHMIRSI7AY3N"
+}
+
+variable "domain_name" {
+    default = "dawsdevops86.fun"
+}
