@@ -1,12 +1,5 @@
 #!/bin/bash
 
-sudo growpart /dev/nvme0n1 4
-sudo lvextend -L +30G /dev/mapper/RootVG-homeVol
-sudo xfs_growfs /home
-
-
-
-
 component=$1
 environment=$2
 dnf install ansible -y
@@ -31,5 +24,5 @@ else
     git clone $REPO_URL
     cd $ANSIBLE_DIR
 fi
-
+echo "environment is: $2"
 ansible-playbook -e component=$component -e env=$environment main.yaml
