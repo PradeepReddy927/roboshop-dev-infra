@@ -2,16 +2,14 @@ resource "aws_instance" "mongodb" {
     ami = local.ami_id
     instance_type = "t3.micro"
     vpc_security_group_ids = [local.mongodb_sg_id]
-    subnet_id = local.database_subnet_ids
-
+    subnet_id = local.database_subnet_id
+    
     tags = merge (
         local.common_tags,
         {
-          Name = "${local.common_name_suffix}-mongodb" # roboshop-dev-mongodb
+            Name = "${local.common_name_suffix}-mongodb" # roboshop-dev-mongodb
         }
-          
-    ) 
-    
+    )
 }
 
 resource "terraform_data" "mongodb" {
@@ -34,8 +32,7 @@ resource "terraform_data" "mongodb" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh"
-        # "sudo sh /tmp/bootstrap.sh mongodb"
+        "sudo sh /tmp/bootstrap.sh mongodb"
     ]
   }  
   
@@ -48,16 +45,14 @@ resource "aws_instance" "redis" {
     ami = local.ami_id
     instance_type = "t3.micro"
     vpc_security_group_ids = [local.redis_sg_id]
-    subnet_id = local.database_subnet_ids
-
+    subnet_id = local.database_subnet_id
+    
     tags = merge (
         local.common_tags,
         {
-          Name = "${local.common_name_suffix}-redis" # roboshop-dev-redis
+            Name = "${local.common_name_suffix}-redis" # roboshop-dev-redis
         }
-          
-    ) 
-    
+    )
 }
 
 resource "terraform_data" "redis" {
@@ -93,16 +88,14 @@ resource "aws_instance" "rabbitmq" {
     ami = local.ami_id
     instance_type = "t3.micro"
     vpc_security_group_ids = [local.rabbitmq_sg_id]
-    subnet_id = local.database_subnet_ids
-
+    subnet_id = local.database_subnet_id
+    
     tags = merge (
         local.common_tags,
         {
-          Name = "${local.common_name_suffix}-rabbitmq" # roboshop-dev-rabbitmq
+            Name = "${local.common_name_suffix}-rabbitmq" # roboshop-dev-rabbitmq
         }
-          
-    ) 
-    
+    )
 }
 
 resource "terraform_data" "rabbitmq" {
@@ -141,24 +134,21 @@ resource "aws_instance" "mysql" {
     ami = local.ami_id
     instance_type = "t3.micro"
     vpc_security_group_ids = [local.mysql_sg_id]
-    subnet_id = local.database_subnet_ids
-    iam_instance_profile = aws_iam_instance_profile.mysql.name
-
+    subnet_id = local.database_subnet_id
+    
     tags = merge (
         local.common_tags,
         {
-          Name = "${local.common_name_suffix}-mysql" # roboshop-dev-mysql
+            Name = "${local.common_name_suffix}-mysql" # roboshop-dev-mysql
         }
-          
-    ) 
-    
+    )
 }
 
-resource "aws_iam_instance_profile" "mysql" {
-  name = "mysql"
-  role = "EC2SSMPARAMETERREAD1"
+# resource "aws_iam_instance_profile" "mysql" {
+#   name = "mysql"
+#   role = "EC2SSMPARAMETERREAD1"
 
-}
+# }
 
 resource "terraform_data" "mysql" {
   triggers_replace = [
