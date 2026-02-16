@@ -7,7 +7,7 @@ resource "aws_instance" "mongodb" {
     tags = merge (
         local.common_tags,
         {
-            Name = "${local.common_name_suffix}-mongodb" # roboshop-dev-mongodb
+          Name = "${local.common_name_suffix}-mongodb" # roboshop-dev-mongodb
         }
           
     ) 
@@ -53,7 +53,7 @@ resource "aws_instance" "redis" {
     tags = merge (
         local.common_tags,
         {
-            Name = "${local.common_name_suffix}-redis" # roboshop-dev-redis
+          Name = "${local.common_name_suffix}-redis" # roboshop-dev-redis
         }
           
     ) 
@@ -98,7 +98,7 @@ resource "aws_instance" "rabbitmq" {
     tags = merge (
         local.common_tags,
         {
-            Name = "${local.common_name_suffix}-rabbitmq" # roboshop-dev-rabbitmq
+          Name = "${local.common_name_suffix}-rabbitmq" # roboshop-dev-rabbitmq
         }
           
     ) 
@@ -147,7 +147,7 @@ resource "aws_instance" "mysql" {
     tags = merge (
         local.common_tags,
         {
-            Name = "${local.common_name_suffix}-mysql" # roboshop-dev-mysql
+          Name = "${local.common_name_suffix}-mysql" # roboshop-dev-mysql
         }
           
     ) 
