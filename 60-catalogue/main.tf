@@ -1,3 +1,4 @@
+# Create EC2 instance
 resource "aws_instance" "catalogue" {
     ami = local.ami_id
     instance_type = "t3.micro"
@@ -33,9 +34,9 @@ resource "terraform_data" "catalogue" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/catalogue.sh",
-      # "sudo sh /tmp/catalogue.sh"
-      "sudo sh /tmp/catalogue.sh catalogue ${var.environment}"
+        "chmod +x /tmp/catalogue.sh",
+        # "sudo sh /tmp/catalogue.sh"
+        "sudo sh /tmp/catalogue.sh catalogue ${var.environment}"
     ]
   }
 }
