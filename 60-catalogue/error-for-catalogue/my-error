@@ -1,0 +1,9 @@
+# fatal: [localhost]: FAILED! => {"changed": true, "cmd": ["mongosh", "mongodb-dev.dawsdevops86.fun", "--quiet", "--eval", "db.getMongo().getDBNames().indexOf('catalogue')"], "delta": "0:00:00.860512", "end": "2026-02-23 05:37:38.050028", "msg": "non-zero return code", "rc": 1, "start": "2026-02-23 05:37:37.189516", "stderr": "MongoNetworkError: getaddrinfo ENOTFOUND mongodb-dev.dawsdevops86.fun", "stderr_lines": ["MongoNetworkError: getaddrinfo ENOTFOUND mongodb-dev.dawsdevops86.fun"], "stdout": "", "stdout_lines": []}
+
+
+
+# I GOT THIS error  due hostinger dns namer server not changed it took default 
+
+
+
+Reslove : I add route53 dnd name to hostinger remove default & add route53 dns name servers to hostinger 
