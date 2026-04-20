@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "mysql_bastion" {
   to_port            = 22
 } 
 
-# ------------------------------
+
 
 resource "aws_security_group_rule" "catalogue_bastion" {            
    type              = "ingress"
