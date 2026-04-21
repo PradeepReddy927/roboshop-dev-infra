@@ -6,11 +6,12 @@ resource "aws_instance" "catalogue" {
     subnet_id = local.private_subnet_id
     
     tags = merge (
-        local.common_tags,
+      local.common_tags,
         {
-            Name = "${local.common_name_suffix}-catalogue" # roboshop-dev-mongodb
+            Name = "${local.common_name_suffix}-catalogue" # roboshop-dev-catalogue
         }
     )
+    
 }
 
 # Connect to instance using remote-exec provisioner through terraform_data
@@ -40,3 +41,148 @@ resource "terraform_data" "catalogue" {
     ]
   }
 }
+
+# Stop the instance to take image
+resource "aws_ec2_instance_state" "catalogue" {
+  instance_id = aws_instance.catalogue.id
+  state       = "stopped"
+  depends_on = [terraform_data.catalogue]
+}
+
+resource "aws_ami_from_instance" "catalogue" {
+  name               = "${local.common_name_suffix}-catalogue-ami"
+  source_instance_id = aws_instance.catalogue.id
+  depends_on = [aws_ec2_instance_state.catalogue]
+
+     tags = merge (
+      local.common_tags,
+        {
+            Name = "${local.common_name_suffix}-catalogue" # roboshop-dev-catalogue
+        }
+    )
+}
+
+
+# TARGET GROUP
+resource "aws_lb_target_group" "catalogue" {
+  name     = "${local.common_name_suffix}-catalogue"
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+  deregistration_delay = 60 #waiting preriod before deleting the instance
+  health_check {
+    healthy_threshold = 2
+    interval = 10
+    matcher = "200-299"
+    path = "/health"
+    port = 8080
+    protocol = "HTTP"
+    timeout = 2
+    unhealthy_threshold = 2
+  }
+}
+
+
+# AWS_LAUNCH_TEMPLATE
+
+resource "aws_launch_template" "catalogue" {
+  name = "${local.common_name_suffix}-catalogue"
+  image_id = aws_ami_from_instance.catalogue.id
+
+  instance_initiated_shutdown_behavior = "terminate"
+  instance_type = "t3.micro"
+
+  vpc_security_group_ids = [local.catalogue_sg_id]
+
+  # Tags Attached to Instance
+  tag_specifications {
+    resource_type = "instance"
+
+    tags =  merge (
+      local.common_tags,
+      {
+        NAME = "${local.common_name_suffix}-catalogue"
+      }
+    )
+  
+  }
+
+  
+  # Tags Attached to volume created by instance
+  tag_specifications {
+    resource_type = "volume"
+
+    tags =  merge (
+      local.common_tags,
+      {
+        NAME = "${local.common_name_suffix}-catalogue"
+      }
+    )
+  
+  }
+  
+  # Tags attached to the launch template
+  tags =  merge (
+      local.common_tags,
+      {
+        NAME = "${local.common_name_suffix}-catalogue"
+      }
+    )
+
+
+  
+}
+
+resource "aws_autoscaling_group" "catalogue" {
+  name                      = "${local.common_name_suffix}-catalogue"
+  max_size                  = 10
+  min_size                  = 1 
+  health_check_grace_period = 100
+  health_check_type         = "ELB"
+  desired_capacity          = 1
+  force_delete              = false
+  launch_template {
+    id      = aws_launch_template.catalogue.id
+    version = aws_launch_template.catalogue.latest_version
+  }
+  vpc_zone_identifier       = local.private_subnet_ids
+  target_group_arns         = [aws_lb_target_group.catalogue.arn] 
+  
+
+  dynamic "tag" { # we will get the iterator name as tag
+    for_each = merge(
+      local.common_tags,
+      {
+        Name = "${local.common_name_suffix}-catalogue"
+      }
+    )
+    content {
+      key = tag.key
+      value = key.value
+      propagate_at_launch = true
+    }
+  }   
+
+  timeouts {
+    delete = "15m"
+  }
+
+}
+
+
+resource "aws_autoscaling_policy" "example" {
+  autoscaling_group_name = aws_autoscaling_group.catalogue.name
+  name                   = "${local.common_name_suffix}-catalogue"
+  policy_type            = "TargetTrackingScaling"
+
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 75.0
+  }
+
+}
+
+
