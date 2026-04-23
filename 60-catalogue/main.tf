@@ -170,7 +170,7 @@ resource "aws_autoscaling_group" "catalogue" {
 }
 
 
-resource "aws_autoscaling_policy" "example" {
+resource "aws_autoscaling_policy" "catalogue" {
   autoscaling_group_name = aws_autoscaling_group.catalogue.name
   name                   = "${local.common_name_suffix}-catalogue"
   policy_type            = "TargetTrackingScaling"
@@ -200,3 +200,20 @@ resource "aws_lb_listener_rule" "catalogue" {
     }
   }
 }
+
+resource "terraform_data" "catalogue_local" {
+  triggers_replace = [
+    aws_instance.catalogue.id
+  ]
+  
+  depends_on = [aws_autoscaling_policy.catalogue ]
+ 
+
+  # terraform copies this file to catalogue server
+
+
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
+ }
+
+} 
