@@ -1,3 +1,4 @@
+# Mongodb accepting connections from bastion on port 22
 resource "aws_security_group_rule" "mongodb_bastion" {
   type              = "ingress"
   security_group_id = local.mongodb_sg_id
@@ -25,7 +26,7 @@ resource "aws_security_group_rule" "mongodb_user" {
   to_port           = 27017
 }
 
-# Refis accepting connections from bastion on port 22
+# Redis accepting connections from bastion on port 22
 resource "aws_security_group_rule" "redis_bastion" {
   type              = "ingress"
   security_group_id = local.redis_sg_id
